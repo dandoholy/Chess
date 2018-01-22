@@ -38,4 +38,8 @@ class Board
     #raise InvalidMoveError # if TODO check valid move
   end
   
+  def valid_pos(pos)
+    pos.all? {|n| -1 < n < 8}
+  end
+  
 end

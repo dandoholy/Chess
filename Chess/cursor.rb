@@ -76,8 +76,27 @@ class Cursor
   end
 
   def handle_key(key)
+    case key
+    when " " 
+      return @cursor_pos
+    when "\r" 
+      return @cursor_pos
+    when "\u0003" 
+      Process.exit(0)
+    end
   end
 
   def update_pos(diff)
+    case diff
+    when "w"
+       @cursor_pos.first -= 1 if self.board.valid_pos([self.cursor_pos.first - 1,self.cursor_pos.last])
+    when "a" 
+      @cursor_pos.last -= 1 if self.board.valid_pos([self.cursor_pos.first,self.cursor_pos.last - 1])
+    when "s" 
+      @cursor_pos.first += 1 if self.board.valid_pos([self.cursor_pos.first + 1,self.cursor_pos.last])
+    when "d" 
+      @cursor_pos.last += 1 if self.board.valid_pos([self.cursor_pos.first,self.cursor_pos.last + 1])
+    end
+    nil
   end
 end

@@ -1,14 +1,20 @@
 
 class Piece
   attr_accessor :pos
+  attr_reader :color
   def initialize(color, board, pos)
     @color = color
     @board = board
     @pos = pos
   end
   
+  def moves
+    
+    
+  end
+  
   def to_s
-    :P
+    "P"
   end
   
   def empty?
@@ -35,7 +41,8 @@ class NullPiece < Piece
   end
   
   def to_s
-    :N
+    " "
   end
 end
 
+# class Sliding Pieces
