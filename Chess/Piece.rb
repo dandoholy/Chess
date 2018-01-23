@@ -171,22 +171,65 @@ class King < Piece
 end
 
 class Pawns < Piece
+  MOVE_DIFF = {black: [[1, 0],[2,0],[1,1],[1,-1]], white: [[-1,0],[-2,0],[-1,-1],[-1,1]]}
   def moves
-    if self.pos.first == 1 && self.color == :black
-      movey = [[1,0],[2,0]]
-    elsif self.color == :black
-      movey = [[1,0]]
+    # if self.pos.first == 1 && self.color == :black
+    #   movey = [[1,0],[2,0]]
+    # elsif self.color == :black
+    #   movey = [[1,0]]
+    #   x,y = self.pos
+    #   movey += [[1,-1],[1,1]].select{|dx, dy| board[[x+dx, y+dy]].color == :white} 
+    # elsif self.pos.first == 6 && self.color == :white
+    #   movey = [[-1,0],[-2,0]]
+    # else
+    #   movey = [[-1,0]]
+    #   x,y = self.pos
+    #   movey += [[-1,-1],[-1,1]].select{|dx, dy| board[[x+dx, y+dy]].color == :black} 
+    # end
+    
+    if self.starting? 
+      pawn_moveys = MOVE_DIFF[self.color].take(2).reject{|el| collision?(el)} + MOVE_DIFF[self.color].drop(2).select{|el| capture?(el)}
       x,y = self.pos
-      movey += [[1,-1],[1,1]].select{|dx, dy| board[[x+dx, y+dy]].color == :white} 
-    elsif self.pos.first == 6 && self.color == :white
-      movey = [[-1,0],[-2,0]]
+      movey = []
+      pawn_moveys.each {|dx,dy| movey << [x+dx, y+dy]}
+      movey
     else
-      movey = [[-1,0]]
-      x,y = self.pos
-      movey += [[-1,-1],[-1,1]].select{|dx, dy| board[[x+dx, y+dy]].color == :black} 
+      movey = MOVE_DIFF[self.color].take(1).reject{|el| collision?(el)} + MOVE_DIFF[self.color].drop(2).select{|el| capture?(el)}
     end
     movey
     
+  end
+  
+  def collision?(move_diff)
+    x,y = self.pos
+    dx,dy = move_diff
+    pot_pos = [x+dx, y+dy]
+    if self.board[pot_pos].color != nil
+      true
+    else
+      false
+    end
+  end
+  
+  def capture?(move_diff)
+    x,y = self.pos
+    dx,dy = move_diff
+    pot_pos = [x+dx, y+dy]
+    if (self.board[pot_pos].color != self.color && self.board[pot_pos].color != nil)
+      true
+    else
+      false
+    end
+  end
+  
+  def starting?
+    if self.color == :black && self.pos.first == 1
+      true
+    elsif self.color == :white && self.pos.first == 6
+      true
+    else
+      false
+    end
   end
   
   def to_s
