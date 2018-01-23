@@ -9,6 +9,7 @@ class Piece
     @pos = pos
   end
   
+  
 
   def to_s
     "P"
@@ -18,7 +19,10 @@ class Piece
   
   end
   
-  def valid_moves
+  def valid_move?(end_pos)
+    
+    self.moves.include?(end_pos)
+    
   end
   
   def pos=(val)
@@ -173,20 +177,6 @@ end
 class Pawns < Piece
   MOVE_DIFF = {black: [[1, 0],[2,0],[1,1],[1,-1]], white: [[-1,0],[-2,0],[-1,-1],[-1,1]]}
   def moves
-    # if self.pos.first == 1 && self.color == :black
-    #   movey = [[1,0],[2,0]]
-    # elsif self.color == :black
-    #   movey = [[1,0]]
-    #   x,y = self.pos
-    #   movey += [[1,-1],[1,1]].select{|dx, dy| board[[x+dx, y+dy]].color == :white} 
-    # elsif self.pos.first == 6 && self.color == :white
-    #   movey = [[-1,0],[-2,0]]
-    # else
-    #   movey = [[-1,0]]
-    #   x,y = self.pos
-    #   movey += [[-1,-1],[-1,1]].select{|dx, dy| board[[x+dx, y+dy]].color == :black} 
-    # end
-    
     if self.starting? 
       pawn_moveys = MOVE_DIFF[self.color].take(2).reject{|el| collision?(el)} + MOVE_DIFF[self.color].drop(2).select{|el| capture?(el)}
       x,y = self.pos
@@ -194,7 +184,11 @@ class Pawns < Piece
       pawn_moveys.each {|dx,dy| movey << [x+dx, y+dy]}
       movey
     else
-      movey = MOVE_DIFF[self.color].take(1).reject{|el| collision?(el)} + MOVE_DIFF[self.color].drop(2).select{|el| capture?(el)}
+      pawn_moveys = MOVE_DIFF[self.color].take(1).reject{|el| collision?(el)} + MOVE_DIFF[self.color].drop(2).select{|el| capture?(el)}
+      x,y = self.pos
+      movey = []
+      pawn_moveys.each {|dx,dy| movey << [x+dx, y+dy]}
+      movey
     end
     movey
     

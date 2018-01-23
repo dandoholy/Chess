@@ -67,12 +67,12 @@ class Board
   end
   
   def move_piece(start_pos,end_pos)
+    piece = self[start_pos]
+    raise NoPieceError if self[start_pos].nil?
+    raise InvalidMoveError unless piece.valid_move?(end_pos)
     self[end_pos] = self[start_pos]
     self[start_pos] = @sentinel
     self[end_pos].pos = end_pos
-    #@sentinel.position << start_pos
-    raise NoPieceError if self[start_pos].nil?
-    #raise InvalidMoveError # if TODO check valid move
   end
   
   def valid_pos(pos)
@@ -80,3 +80,6 @@ class Board
   end
   
 end
+
+
+  
