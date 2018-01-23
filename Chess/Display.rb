@@ -16,16 +16,34 @@ class Display
         if piece.color == :white
           str = piece.to_s.colorize(:white)
         elsif piece.color == :black
-          str = piece.to_s.colorize(:black)
+          str = piece.to_s.colorize(:yellow)
         else
           str = piece.to_s
-        end 
-        # piece.to_s if piece.color == :white
-        # piece.to_s if piece.color == :black
+        end
+        if i % 2 == 0
+          if j % 2 == 0
+            str = str.colorize(background: :red)
+          else
+            str = str.colorize(background: :blue)
+          end
+        else
+          if j.odd?
+            str = str.colorize(background: :red)
+          else
+            str = str.colorize(background: :blue)
+          end
+        end
+        
         str = str.colorize(background: :green) if [i, j] == @cursor.cursor_pos
         print str
       end
       puts
+    end
+    
+    @board.rows.each_with_index do |row, i|
+      row.each_with_index do |square, j|
+    
+      end
     end
     
     

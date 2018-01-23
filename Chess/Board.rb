@@ -4,13 +4,50 @@ class Board
   attr_reader :rows
   def initialize()
     @rows = Array.new(8) { Array.new(8) }
-    @sentinel = NullPiece.new(:nil, self, [])
+    @sentinel = NullPiece.instance
+    # @rows.map!.with_index do |row,idx|
+    #   row.map!.with_index do |col,idx2| 
+    #     if idx < 2 
+    #       Piece.new(:black, self, [idx,idx2])
+    #     elsif idx > 5
+    #       Piece.new(:white, self, [idx,idx2])
+    #     else
+    #       @sentinel
+    #     end
+    #   end
+    # end
+    
+    #MAKIN PAWNS
     @rows.map!.with_index do |row,idx|
       row.map!.with_index do |col,idx2| 
-        if idx < 2 
-          Piece.new(:black, self, [idx,idx2])
-        elsif idx > 5
-          Piece.new(:white, self, [idx,idx2])
+        if idx == 1 
+          Pawns.new(:black, self, [idx,idx2])
+        elsif idx == 6
+          Pawns.new(:white, self, [idx,idx2])
+        elsif idx == 0
+          if idx2 == 0 || idx2 == 7
+            Rook.new(:black, self, [idx,idx2])
+          elsif idx2 == 1 || idx2 == 6
+            Knight.new(:black, self, [idx,idx2])
+          elsif idx2 == 2 || idx2 == 5
+            Bishop.new(:black, self, [idx,idx2])
+          elsif idx2 == 3
+            Queen.new(:black, self, [idx,idx2])
+          else
+            King.new(:black,self,[idx,idx2])
+          end
+        elsif idx == 7
+          if idx2 == 0 || idx2 == 7
+            Rook.new(:white, self, [idx,idx2])
+          elsif idx2 == 1 || idx2 == 6
+            Knight.new(:white, self, [idx,idx2])
+          elsif idx2 == 2 || idx2 == 5
+            Bishop.new(:white, self, [idx,idx2])
+          elsif idx2 == 3
+            Queen.new(:white, self, [idx,idx2])
+          else
+            King.new(:white,self,[idx,idx2])
+          end
         else
           @sentinel
         end
