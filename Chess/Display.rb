@@ -22,7 +22,7 @@ class Display
         end 
         # piece.to_s if piece.color == :white
         # piece.to_s if piece.color == :black
-        str = str.colorize(background: :blue) if [i, j] == @cursor.cursor_pos
+        str = str.colorize(background: :green) if [i, j] == @cursor.cursor_pos
         print str
       end
       puts

@@ -77,26 +77,26 @@ class Cursor
 
   def handle_key(key)
     case key
-    when " " 
-      return @cursor_pos
-    when "\r" 
-      return @cursor_pos
-    when "\u0003" 
+    when :space,
+      @cursor_pos
+    when :return
+      @cursor_pos
+    when :ctrl_c
       Process.exit(0)
+    when :up
+      update_pos(MOVES[:up])
+    when :left 
+      update_pos(MOVES[:left])
+    when :down 
+      update_pos(MOVES[:down])
+    when :right 
+      update_pos(MOVES[:right])
     end
   end
 
   def update_pos(diff)
-    case diff
-    when "w"
-       @cursor_pos.first -= 1 if self.board.valid_pos([self.cursor_pos.first - 1,self.cursor_pos.last])
-    when "a" 
-      @cursor_pos.last -= 1 if self.board.valid_pos([self.cursor_pos.first,self.cursor_pos.last - 1])
-    when "s" 
-      @cursor_pos.first += 1 if self.board.valid_pos([self.cursor_pos.first + 1,self.cursor_pos.last])
-    when "d" 
-      @cursor_pos.last += 1 if self.board.valid_pos([self.cursor_pos.first,self.cursor_pos.last + 1])
-    end
+    @cursor_pos = [@cursor_pos.first + diff.first, @cursor_pos.last + diff.last] if self.board.valid_pos([@cursor_pos.first + diff.first, @cursor_pos.last + diff.last])
+    #@cursor_pos.first -= 1 if self.board.valid_pos([self.cursor_pos.first - 1,self.cursor_pos.last])
     nil
   end
 end

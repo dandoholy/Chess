@@ -39,7 +39,7 @@ class Board
   end
   
   def valid_pos(pos)
-    pos.all? {|n| -1 < n < 8}
+    pos.all? {|n| -1 < n && n < 8}
   end
   
 end
