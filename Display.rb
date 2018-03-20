@@ -1,57 +1,41 @@
-require 'byebug'
+# require 'byebug'
 require_relative 'Board.rb'
 require 'colorize'
 require_relative 'cursor.rb'
 
 class Display
-  attr_reader :cursor
+  attr_reader :cursor, :board
+
   def initialize(board)
     @cursor = Cursor.new([0,0], board)
     @board = board
   end
-  
+
+  def colorize_rows
+    board.rows.map.with_index do |row, row_num|
+      colorize_row(row, row_num)
+    end
+  end
+
+  def colorize_row(row, row_num)
+    row.map.with_index do |piece, col_num|
+      if cursor.cursor_pos == [row_num, col_num] && cursor.selected
+        piece.to_s.colorize(background: :light_magenta)
+      elsif cursor.cursor_pos == [row_num, col_num]
+        piece.to_s.colorize(background: :light_cyan)
+      elsif (row_num+col_num).odd?
+        piece.to_s.colorize(background: :light_yellow)
+      else
+        piece.to_s.colorize(background: :light_green)
+      end
+    end
+  end
+
   def render
     system('clear')
-    @board.rows.each_with_index do |row, i|
-      
-      row.each_with_index do |piece, j|
-        if piece.color == :white
-          str = piece.to_s.colorize(:white)
-        elsif piece.color == :black
-          str = piece.to_s.colorize(:yellow)
-        else
-          str = piece.to_s
-        end
-        if i % 2 == 0
-          if j % 2 == 0
-            str = str.colorize(background: :red)
-          else
-            str = str.colorize(background: :blue)
-          end
-        else
-          if j.odd?
-            str = str.colorize(background: :red)
-          else
-            str = str.colorize(background: :blue)
-          end
-        end
-        
-        str = str.colorize(background: :green) if [i, j] == @cursor.cursor_pos
-        print str
-      end
-      puts
-    end
-    
-    @board.rows.each_with_index do |row, i|
-      row.each_with_index do |square, j|
-    
-      end
-    end
-    
-    
-    
+    colorize_rows.each { |row| puts row.join('') }
   end
-  
+
 end
 
 
@@ -60,7 +44,6 @@ if __FILE__ == $PROGRAM_NAME
   b = Board.new
   d = Display.new(b)
   while true
-    
     d.render
     start_pos = nil
     end_pos = nil

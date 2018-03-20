@@ -1,85 +1,64 @@
-require_relative 'Piece.rb'
+require_relative 'pieces'
 
 class Board
-  attr_reader :rows
-  def initialize()
-    @rows = Array.new(8) { Array.new(8) }
-    @sentinel = NullPiece.instance
-    # @rows.map!.with_index do |row,idx|
-    #   row.map!.with_index do |col,idx2| 
-    #     if idx < 2 
-    #       Piece.new(:black, self, [idx,idx2])
-    #     elsif idx > 5
-    #       Piece.new(:white, self, [idx,idx2])
-    #     else
-    #       @sentinel
-    #     end
-    #   end
-    # end
-    
-    #MAKIN PAWNS
-    @rows.map!.with_index do |row,idx|
-      row.map!.with_index do |col,idx2| 
-        if idx == 1 
-          Pawns.new(:black, self, [idx,idx2])
-        elsif idx == 6
-          Pawns.new(:white, self, [idx,idx2])
-        elsif idx == 0
-          if idx2 == 0 || idx2 == 7
-            Rook.new(:black, self, [idx,idx2])
-          elsif idx2 == 1 || idx2 == 6
-            Knight.new(:black, self, [idx,idx2])
-          elsif idx2 == 2 || idx2 == 5
-            Bishop.new(:black, self, [idx,idx2])
-          elsif idx2 == 3
-            Queen.new(:black, self, [idx,idx2])
-          else
-            King.new(:black,self,[idx,idx2])
-          end
-        elsif idx == 7
-          if idx2 == 0 || idx2 == 7
-            Rook.new(:white, self, [idx,idx2])
-          elsif idx2 == 1 || idx2 == 6
-            Knight.new(:white, self, [idx,idx2])
-          elsif idx2 == 2 || idx2 == 5
-            Bishop.new(:white, self, [idx,idx2])
-          elsif idx2 == 3
-            Queen.new(:white, self, [idx,idx2])
-          else
-            King.new(:white,self,[idx,idx2])
-          end
-        else
-          @sentinel
-        end
-      end
-    end
+  attr_reader :rows, :sentinel
 
+  def initialize()
+    @sentinel = NullPiece.instance
+    fill_board
   end
-  
+
   def [](pos)
-    row,col = pos
+    row, col = pos
     self.rows[row][col]
   end
-  
+
   def []=(pos,val)
-    row,col = pos 
+    row, col = pos
     self.rows[row][col] = val
   end
-  
-  def move_piece(start_pos,end_pos)
+
+  def pos_empty?(pos)
+    self[pos] == sentinel
+  end
+
+  def move_piece(start_pos, end_pos)
+    raise "No piece at that position!" if self.pos_empty?(start_pos)
     piece = self[start_pos]
-    raise NoPieceError if self[start_pos].nil?
-    raise InvalidMoveError unless piece.valid_move?(end_pos)
+    raise "That piece cannot make that move!" unless piece.valid_move?(end_pos)
     self[end_pos] = self[start_pos]
-    self[start_pos] = @sentinel
+    self[start_pos] = sentinel
     self[end_pos].pos = end_pos
+    nil
   end
-  
-  def valid_pos(pos)
-    pos.all? {|n| -1 < n && n < 8}
+
+  def valid_pos?(pos)
+    pos.all? { |n| n.between?(0, 7) }
   end
-  
+
+  private
+
+  def fill_back_row(color)
+    pieces = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+    row = (color == :white) ? 7 : 0
+    pieces.each_with_index do |piece, col|
+      self[[row, col]] = piece.new(color, self, [row, col])
+    end
+  end
+
+  def fill_front_row(color)
+    row = (color == :white) ? 6 : 1
+    8.times do |col|
+      self[[row, col]] = Pawn.new(color, self, [row, col])
+    end
+  end
+
+  def fill_board
+    @rows = Array.new(8) { Array.new(8, sentinel) }
+    [:white, :black].each do |color|
+      fill_back_row(color)
+      fill_front_row(color)
+    end
+  end
+
 end
-
-
-  

@@ -32,11 +32,12 @@ MOVES = {
 
 class Cursor
 
-  attr_reader :cursor_pos, :board
+  attr_reader :cursor_pos, :board, :selected
 
   def initialize(cursor_pos, board)
     @cursor_pos = cursor_pos
     @board = board
+    @selected = false
   end
 
   def get_input
@@ -44,59 +45,46 @@ class Cursor
     handle_key(key)
   end
 
+  def toggle_selected
+    @selected = !@selected
+  end
+
   private
 
   def read_char
-    STDIN.echo = false # stops the console from printing return values
+    STDIN.echo = false
 
-    STDIN.raw! # in raw mode data is given as is to the program--the system
-                 # doesn't preprocess special characters such as control-c
+    STDIN.raw!
 
-    input = STDIN.getc.chr # STDIN.getc reads a one-character string as a
-                             # numeric keycode. chr returns a string of the
-                             # character represented by the keycode.
-                             # (e.g. 65.chr => "A")
+    input = STDIN.getc.chr
 
     if input == "\e" then
-      input << STDIN.read_nonblock(3) rescue nil # read_nonblock(maxlen) reads
-                                                   # at most maxlen bytes from a
-                                                   # data stream; it's nonblocking,
-                                                   # meaning the method executes
-                                                   # asynchronously; it raises an
-                                                   # error if no data is available,
-                                                   # hence the need for rescue
+      input << STDIN.read_nonblock(3) rescue nil
 
       input << STDIN.read_nonblock(2) rescue nil
     end
 
-    STDIN.echo = true # the console prints return values again
-    STDIN.cooked! # the opposite of raw mode :)
+    STDIN.echo = true
+    STDIN.cooked!
 
-    return input
+    input
   end
 
   def handle_key(key)
     case key
-    when :space,
-      @cursor_pos
-    when :return
-      @cursor_pos
+    when :space, :return
+      self.toggle_selected
+      cursor_pos
     when :ctrl_c
       Process.exit(0)
-    when :up
-      update_pos(MOVES[:up])
-    when :left 
-      update_pos(MOVES[:left])
-    when :down 
-      update_pos(MOVES[:down])
-    when :right 
-      update_pos(MOVES[:right])
+    when :up, :left, :down, :right
+      update_pos(MOVES[key])
     end
   end
 
   def update_pos(diff)
-    @cursor_pos = [@cursor_pos.first + diff.first, @cursor_pos.last + diff.last] if self.board.valid_pos([@cursor_pos.first + diff.first, @cursor_pos.last + diff.last])
-    #@cursor_pos.first -= 1 if self.board.valid_pos([self.cursor_pos.first - 1,self.cursor_pos.last])
+    pos = [cursor_pos[0] + diff[0], cursor_pos[1] + diff[1]]
+    @cursor_pos = pos if self.board.valid_pos?(pos)
     nil
   end
 end
