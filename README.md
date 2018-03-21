@@ -6,3 +6,12 @@
 
 # Technologies Used
 * Ruby
+
+# Features
+* Check
+* Move-enforcement
+
+# Upcoming Features
+* Castling
+* En Passant
+* Restart Game
