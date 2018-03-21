@@ -14,7 +14,7 @@ class Game
   end
 
   def play
-   until self.board.checkmate?(current_player)
+   until self.board.checkmate?(current_player.color)
      begin
        start_pos, end_pos = self.current_player.make_move
        self.board.move_piece(self.current_player.color, start_pos, end_pos)

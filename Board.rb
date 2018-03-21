@@ -1,4 +1,5 @@
 require_relative 'pieces'
+require 'byebug'
 
 class Board
   attr_reader :rows, :sentinel
