@@ -1,4 +1,3 @@
-# require 'byebug'
 require_relative 'Board.rb'
 require 'colorize'
 require_relative 'cursor.rb'
@@ -34,27 +33,5 @@ class Display
   def render
     system('clear')
     colorize_rows.each { |row| puts row.join('') }
-  end
-
-end
-
-
-
-if __FILE__ == $PROGRAM_NAME
-  b = Board.new
-  d = Display.new(b)
-  while true
-    d.render
-    start_pos = nil
-    end_pos = nil
-    until start_pos.is_a?(Array) && start_pos.length == 2
-      start_pos = d.cursor.get_input
-      d.render
-    end
-    until end_pos.is_a?(Array) && end_pos.length == 2
-      end_pos = d.cursor.get_input
-      d.render
-    end
-    b.move_piece(start_pos,end_pos)
   end
 end

@@ -11,7 +11,7 @@ class Pawn < Piece
   end
 
   def moves
-    forward_moves.concat(capture_moves)
+    forward_moves + capture_moves
   end
 
   def forward_move
@@ -35,14 +35,14 @@ class Pawn < Piece
     left_attack_pos = [x+self.forward_move, y-1]
     if (self.board.valid_pos?(left_attack_pos) &&
       self.board[left_attack_pos].color != self.color &&
-      self.board[left_attack_pos] != NullPiece.instance)
+      !self.board[left_attack_pos].null_piece?)
       moves << left_attack_pos
     end
 
     right_attack_pos = [x+self.forward_move, y+1]
     if (self.board.valid_pos?(right_attack_pos) &&
       self.board[right_attack_pos].color != self.color &&
-      self.board[right_attack_pos] != NullPiece.instance)
+      !self.board[right_attack_pos].null_piece?)
       moves << right_attack_pos
     end
     moves

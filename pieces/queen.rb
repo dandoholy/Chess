@@ -9,6 +9,6 @@ class Queen < Piece
   end
 
   def move_set
-    self.diagonal_moves.concat(self.horizontal_moves)
+    self.diagonal_moves + self.horizontal_moves
   end
 end
