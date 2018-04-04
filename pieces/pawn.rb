@@ -7,7 +7,7 @@ class Pawn < Piece
   end
 
   def starting_pos?
-    self.pos[0] == (self.color == :white) ? 6 : 1
+    self.pos[0] == ((self.color == :white) ? 6 : 1)
   end
 
   def moves
