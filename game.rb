@@ -19,18 +19,26 @@ class Game
        start_pos, end_pos = self.current_player.make_move
        self.board.move_piece(self.current_player.color, start_pos, end_pos)
        self.switch_players!
+       check_for_check
      rescue StandardError => e
-       puts e.message
+       self.display.messages.push(e.message)
        retry
      end
+     self.display.clear_messages
    end
    display.render
-   puts "#{current_player} has been checkmated and lost."
+   puts "#{current_player.color.capitalize} has been checkmated and lost!"
    nil
  end
 
   def switch_players!
     @current_player = (@current_player == @white) ? @black : @white
+  end
+
+  def check_for_check
+    if self.board.in_check?(self.current_player.color)
+      self.display.messages.push("#{self.current_player.color.capitalize} is in check!")
+    end
   end
 end
 
